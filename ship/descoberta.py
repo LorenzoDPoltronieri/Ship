@@ -25,6 +25,11 @@ def mostrar(dispositivos: list[dict]) -> None:
     for d in ordenados:
         print(f"{d['ip']:<18}{d['mac']}")
 
+    print("-" * 35)
+    print(f"Existem {len(ordenados)} Dispositivos nessa rede!") 
+
+
+
 if __name__ == "__main__":
    dispositivos = escanear("192.168.100.0/24")
    mostrar(dispositivos)

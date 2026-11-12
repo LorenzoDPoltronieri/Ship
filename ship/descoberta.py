@@ -1,4 +1,5 @@
 from scapy.all import ARP, Ether, srp
+import ipaddress
 
 def escanear(rede: str) -> list[dict]:
     #pergunta 'Quem esta ai?' para a rede e devolve quem respondeu.
@@ -13,6 +14,17 @@ def escanear(rede: str) -> list[dict]:
         dispositivos.append({"ip": recebido.psrc, "mac": recebido.hwsrc})
     return dispositivos
 
+def mostrar(dispositivos: list[dict]) -> None:
+    #Imprime os dispositivos numa tabela, ordenados por IP.
+
+    ordenados = sorted(dispositivos, key=lambda d: ipaddress.ip_address(d["ip"]))
+
+    print(f"{'IP':<18}{'MAC'}")
+    print("-" * 35)
+
+    for d in ordenados:
+        print(f"{d['ip']:<18}{d['mac']}")
+
 if __name__ == "__main__":
-    for d in escanear("192.168.100.0/24"):
-        print(d)
+   dispositivos = escanear("192.168.100.0/24")
+   mostrar(dispositivos)

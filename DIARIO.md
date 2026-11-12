@@ -58,3 +58,15 @@ Aparelhos em modo economia de energia podem não responder ao scan, realizado o 
 
 
 
+
+
+\###############################################################################
+
+
+
+A ordenação dos Ips em Python não é funcional porque a mesma olha caractere por caractere, assim em um exempor o 25 vira antes do numero 3 em uma ordem. 
+
+
+
+
+

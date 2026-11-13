@@ -1,5 +1,26 @@
 from scapy.all import ARP, Ether, srp
 import ipaddress
+from mac_vendor_lookup import MacLookup, VendorNotFoundError
+
+
+busca = MacLookup()
+
+def eh_aleatorio(mac: str) -> bool:
+    #Diz se o MAC foi inventado pelo aparelho (MAC aleatório).
+
+    return mac[1].upper() in "26AE"
+
+
+def fabricante(mac: str) -> str:
+    #Descobre o fabricante pelo Mec
+
+    if eh_aleatorio(mac):
+        return "MAC aleatório"
+    try:
+        return busca.lookup(mac)
+    except VendorNotFoundError:
+        return "Desconhecido"
+
 
 def escanear(rede: str) -> list[dict]:
     #pergunta 'Quem esta ai?' para a rede e devolve quem respondeu.
@@ -11,7 +32,11 @@ def escanear(rede: str) -> list[dict]:
 
     dispositivos = []
     for enviado,recebido in respondidos:
-        dispositivos.append({"ip": recebido.psrc, "mac": recebido.hwsrc})
+        dispositivos.append({
+            "ip": recebido.psrc, 
+            "mac": recebido.hwsrc,
+            "fabricante": fabricante(recebido.hwsrc),
+            })
     return dispositivos
 
 def mostrar(dispositivos: list[dict]) -> None:
@@ -19,13 +44,13 @@ def mostrar(dispositivos: list[dict]) -> None:
 
     ordenados = sorted(dispositivos, key=lambda d: ipaddress.ip_address(d["ip"]))
 
-    print(f"{'IP':<18}{'MAC'}")
-    print("-" * 35)
+    print(f"{'IP':<18}{'MAC':<20}{'fabricante'}")
+    print("-" * 60)
 
     for d in ordenados:
-        print(f"{d['ip']:<18}{d['mac']}")
+        print(f"{d['ip']:<18}{d['mac']:<20}{d['fabricante']}")
 
-    print("-" * 35)
+    print("-" * 60)
     print(f"Existem {len(ordenados)} Dispositivos nessa rede!") 
 
 

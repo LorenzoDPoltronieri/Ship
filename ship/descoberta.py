@@ -1,4 +1,4 @@
-from scapy.all import ARP, Ether, srp
+from scapy.all import ARP, Ether, srp, conf, get_if_addr
 import ipaddress
 from mac_vendor_lookup import MacLookup, VendorNotFoundError
 
@@ -55,6 +55,16 @@ def mostrar(dispositivos: list[dict]) -> None:
 
 
 
+def descobrir_rede() -> str:
+    #Descobre o ip em que esta logado com a s funções conf.iface e get_if_addr(...)
+    meu_ip = get_if_addr(conf.iface)
+    rede = ipaddress.ip_network(f"{meu_ip}/24", strict=False)
+    return str(rede)
+
+
+
 if __name__ == "__main__":
-   dispositivos = escanear("192.168.100.0/24")
-   mostrar(dispositivos)
+    rede = descobrir_rede()
+    print(f"Escaneando a rede {rede}...\n")
+    dispositivos = escanear(rede)
+    mostrar(dispositivos)
